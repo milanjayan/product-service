@@ -1,12 +1,12 @@
 package com.ecommerce.productservice.controllers;
 
+import com.ecommerce.productservice.Dtos.ProductRequest;
+import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,18 +18,37 @@ public class ProductController {
     private ProductService productService;
 
     //get by id
-    @GetMapping("{id}")
-    public Product getProductById(@PathVariable("id") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
         return productService.getProductById(id);
     }
 
-    //getall
+    //get all products
     @GetMapping("")
-    public List<Product> getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts() {
         return productService.getAllProducts();
     }
+
     //create
+    @PostMapping("")
+    public ResponseEntity<Product> createProduct(@RequestBody ProductRequest request) {
+        return productService.createProduct(request);
+    }
+
     //delete
     //update
     //replace
+
+
+
+//    private Product convertCreateProductRequestToProduct(ProductRequest request) {
+//        Category category = Category.builder().title(request.getCategory()).build();
+//        return Product.builder()
+//                .title(request.getTitle())
+//                .price(request.getPrice())
+//                .Description(request.getDescription())
+//                .category(category)
+//                .image(request.getImage())
+//                .build();
+//    }
 }
