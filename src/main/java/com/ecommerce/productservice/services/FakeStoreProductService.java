@@ -5,9 +5,12 @@ import com.ecommerce.productservice.Dtos.ProductRequest;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -98,12 +101,34 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<Product> updateProduct(ProductRequest request) {
-        return null;
+    public ResponseEntity<Product> replaceProduct(Long id, ProductRequest request) {
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request);
+        ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
+        ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.PUT, requestCallback, responseExtractor);
+        FakeStoreProductDto fakeStoreProductDto = response.getBody();
+        if(fakeStoreProductDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+        return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Product> updateProduct(Long id, ProductRequest request) {
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request);
+        ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
+        ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.PUT, requestCallback, responseExtractor);
+        FakeStoreProductDto fakeStoreProductDto = response.getBody();
+        if(fakeStoreProductDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Product> deleteProduct(Long id) {
-        return null;
+        ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
+        ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.DELETE, null, responseExtractor);
+        FakeStoreProductDto fakeStoreProductDto = response.getBody();
+        if(fakeStoreProductDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 }
