@@ -13,6 +13,8 @@ public interface ProductService {
 
     ResponseEntity<List<Category>> getAllCategories();
 
+    ResponseEntity<List<Product>> getInCategory(String category);
+
     ResponseEntity<Product> createProduct(ProductRequest request);
 
     ResponseEntity<Product> updateProduct(ProductRequest request);

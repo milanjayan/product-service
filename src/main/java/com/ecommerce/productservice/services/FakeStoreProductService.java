@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,12 +46,44 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public ResponseEntity<List<Product>> getAllProducts() {
-        return null;
+        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl, FakeStoreProductDto[].class);
+        List<Product> products = new ArrayList<>();
+        if(fakeStoreProductDtos == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
+            Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+            products.add(product);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<List<Category>> getAllCategories() {
-        return null;
+        String[] categoriesArray = restTemplate.getForObject(fakeStoreProductUrl+"categories", String[].class);
+        List<Category> categories = new ArrayList<>();
+        if(categoriesArray == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        for(String element : categoriesArray) {
+            Category category = Category.builder().title(element).build();
+            categories.add(category);
+        }
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<Product>> getInCategory(String category) {
+        FakeStoreProductDto[] FakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl+"category/"+category, FakeStoreProductDto[].class);
+        List<Product> products = new ArrayList<>();
+        if(FakeStoreProductDtos == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        for(FakeStoreProductDto element : FakeStoreProductDtos) {
+            Product product = convertFakeStoreProductDtoToProduct(element);
+            products.add(product);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @Override

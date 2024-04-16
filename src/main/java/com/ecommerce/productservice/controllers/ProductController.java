@@ -29,6 +29,16 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
+    @GetMapping("/category")
+    public ResponseEntity<List<Category>> getAllCategories() {
+        return productService.getAllCategories();
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getInCategory(@PathVariable String category) {
+        return productService.getInCategory(category);
+    }
+
     //create
     @PostMapping("")
     public ResponseEntity<Product> createProduct(@RequestBody ProductRequest request) {
