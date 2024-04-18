@@ -1,6 +1,6 @@
 package com.ecommerce.productservice.services;
 
-import com.ecommerce.productservice.Dtos.ProductRequest;
+import com.ecommerce.productservice.Dtos.ProductRequestDto;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,9 @@ public interface ProductService {
 
     ResponseEntity<List<Product>> getInCategory(String category);
 
-    ResponseEntity<Product> createProduct(ProductRequest request);
+    ResponseEntity<Product> createProduct(ProductRequestDto request);
 
-    ResponseEntity<Product> replaceProduct(Long id, ProductRequest request);
-    ResponseEntity<Product> updateProduct(Long id, ProductRequest request);
+    ResponseEntity<Product> replaceProduct(Long id, ProductRequestDto request);
+    ResponseEntity<Product> updateProduct(Long id, ProductRequestDto request);
     ResponseEntity<Product> deleteProduct(Long id);
 }

@@ -1,7 +1,7 @@
 package com.ecommerce.productservice.services;
 
 import com.ecommerce.productservice.Dtos.FakeStoreProductDto;
-import com.ecommerce.productservice.Dtos.ProductRequest;
+import com.ecommerce.productservice.Dtos.ProductRequestDto;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import lombok.AllArgsConstructor;
@@ -90,7 +90,7 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<Product> createProduct(ProductRequest request) {
+    public ResponseEntity<Product> createProduct(ProductRequestDto request) {
 
         FakeStoreProductDto fakeStoreProductDto = restTemplate.postForObject(fakeStoreProductUrl, request, FakeStoreProductDto.class);
         if(fakeStoreProductDto == null) {
@@ -101,7 +101,7 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<Product> replaceProduct(Long id, ProductRequest request) {
+    public ResponseEntity<Product> replaceProduct(Long id, ProductRequestDto request) {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(request);
         ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
         ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.PUT, requestCallback, responseExtractor);
@@ -112,7 +112,7 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<Product> updateProduct(Long id, ProductRequest request) {
+    public ResponseEntity<Product> updateProduct(Long id, ProductRequestDto request) {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(request);
         ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
         ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.PUT, requestCallback, responseExtractor);

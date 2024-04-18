@@ -1,6 +1,6 @@
 package com.ecommerce.productservice.controllers;
 
-import com.ecommerce.productservice.Dtos.ProductRequest;
+import com.ecommerce.productservice.Dtos.ProductRequestDto;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.services.ProductService;
@@ -41,19 +41,19 @@ public class ProductController {
 
     //create
     @PostMapping("")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductRequest request) {
+    public ResponseEntity<Product> createProduct(@RequestBody ProductRequestDto request) {
         return productService.createProduct(request);
     }
 
     //replace
     @PutMapping("/{id}")
-    public ResponseEntity<Product> replaceProduct(@PathVariable Long id, @RequestBody ProductRequest request) {
+    public ResponseEntity<Product> replaceProduct(@PathVariable Long id, @RequestBody ProductRequestDto request) {
         return productService.replaceProduct(id, request);
     }
 
     //update
     @PatchMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductRequest request) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDto request) {
         return productService.updateProduct(id, request);
     }
 
