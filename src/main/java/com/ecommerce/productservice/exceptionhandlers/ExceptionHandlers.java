@@ -1,14 +1,76 @@
 package com.ecommerce.productservice.exceptionhandlers;
 
+import com.ecommerce.productservice.Dtos.ExceptionDto;
+import com.ecommerce.productservice.exceptions.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ExceptionHandlers {
-    //testing directory change
+
     @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
-    public ResponseEntity<Void> handleArrayIndexOutOfBoundsException() {
-        return new ResponseEntity<>()
+    public ResponseEntity<ExceptionDto> handleArrayIndexOutOfBoundsException() {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("Something went wrong")
+                .resolution("Nothing can be done")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ExceptionDto> handleProductNotFoundException(ProductNotFoundException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("product with id:"+exception.getId()+" not found")
+                .resolution("Pass id with in range 0 to 20")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoProductsFoundException.class)
+    public ResponseEntity<ExceptionDto> handleNoProductsFoundException(NoProductsFoundException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("no products found")
+                .resolution("Add new products")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoCategoriesFoundException.class)
+    public ResponseEntity<ExceptionDto> handleNoCategoriesFoundException(NoCategoriesFoundException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("no categories found")
+                .resolution("Add new categories")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoProductsFoundInCategoryException.class)
+    public ResponseEntity<ExceptionDto> handleNoProductsFoundInCategoryException(NoProductsFoundInCategoryException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("no products found in category: "+exception.getCategory())
+                .resolution("Add new products in "+exception.getCategory()+" category")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ProductNotCreatedException.class)
+    public ResponseEntity<ExceptionDto> handleProductNotCreatedException(ProductNotCreatedException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("product not created")
+                .resolution("try again later with all credentials")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ProductNotUpdatedException.class)
+    public ResponseEntity<ExceptionDto> handleProductNotUpdatedException(ProductNotUpdatedException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("product with id: "+exception.getId()+" not updated")
+                .resolution("try again later with all credentials")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

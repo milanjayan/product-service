@@ -2,6 +2,7 @@ package com.ecommerce.productservice.services;
 
 import com.ecommerce.productservice.Dtos.FakeStoreProductDto;
 import com.ecommerce.productservice.Dtos.ProductRequestDto;
+import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -38,22 +40,22 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<Product> getProductById(Long id) {
+    public ResponseEntity<Product> getProductById(Long id) throws ProductNotFoundException {
         FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject(fakeStoreProductUrl+id, FakeStoreProductDto.class);
-        if(fakeStoreProductDto == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        Optional<FakeStoreProductDto> optionalFakeStoreProductDto = Optional.ofNullable(fakeStoreProductDto);
+        optionalFakeStoreProductDto.orElseThrow(() -> new ProductNotFoundException(id));
         Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts() throws NoProductsFoundException {
         FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl, FakeStoreProductDto[].class);
-        List<Product> products = new ArrayList<>();
-        if(fakeStoreProductDtos == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        Optional<FakeStoreProductDto[]> optionalFakeStoreProductDtos = Optional.ofNullable(fakeStoreProductDtos);
+        if(optionalFakeStoreProductDtos.isEmpty() || fakeStoreProductDtos.length == 0) {
+            throw new NoProductsFoundException();
         }
+        List<Product> products = new ArrayList<>();
         for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
             Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
             products.add(product);
@@ -62,12 +64,13 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<List<Category>> getAllCategories() throws NoCategoriesFoundException {
         String[] categoriesArray = restTemplate.getForObject(fakeStoreProductUrl+"categories", String[].class);
-        List<Category> categories = new ArrayList<>();
-        if(categoriesArray == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        Optional<String[]> optionalCategoriesArray = Optional.ofNullable(categoriesArray);
+        if(optionalCategoriesArray.isEmpty() || categoriesArray.length == 0) {
+            throw new NoCategoriesFoundException();
         }
+        List<Category> categories = new ArrayList<>();
         for(String element : categoriesArray) {
             Category category = Category.builder().title(element).build();
             categories.add(category);
@@ -76,13 +79,14 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<List<Product>> getInCategory(String category) {
-        FakeStoreProductDto[] FakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl+"category/"+category, FakeStoreProductDto[].class);
-        List<Product> products = new ArrayList<>();
-        if(FakeStoreProductDtos == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<List<Product>> getInCategory(String category) throws NoProductsFoundInCategoryException {
+        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl+"category/"+category, FakeStoreProductDto[].class);
+        Optional<FakeStoreProductDto[]> optionalFakeStoreProductDtos = Optional.ofNullable(fakeStoreProductDtos);
+        if(optionalFakeStoreProductDtos.isEmpty() || fakeStoreProductDtos.length == 0) {
+            throw new NoProductsFoundInCategoryException(category);
         }
-        for(FakeStoreProductDto element : FakeStoreProductDtos) {
+        List<Product> products = new ArrayList<>();
+        for(FakeStoreProductDto element : fakeStoreProductDtos) {
             Product product = convertFakeStoreProductDtoToProduct(element);
             products.add(product);
         }
@@ -90,44 +94,48 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<Product> createProduct(ProductRequestDto request) {
-
+    public ResponseEntity<Product> createProduct(ProductRequestDto request) throws ProductNotCreatedException {
         FakeStoreProductDto fakeStoreProductDto = restTemplate.postForObject(fakeStoreProductUrl, request, FakeStoreProductDto.class);
-        if(fakeStoreProductDto == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        Optional<FakeStoreProductDto> optionalFakeStoreProductDto = Optional.ofNullable(fakeStoreProductDto);
+        optionalFakeStoreProductDto.orElseThrow(() -> new ProductNotCreatedException(request));
         Product response = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Product> replaceProduct(Long id, ProductRequestDto request) {
+    public ResponseEntity<Product> replaceProduct(Long id, ProductRequestDto request) throws ProductNotUpdatedException {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(request);
         ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
         ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.PUT, requestCallback, responseExtractor);
+        if(response == null || response.getBody() == null) {
+            throw new ProductNotUpdatedException(id);
+        }
         FakeStoreProductDto fakeStoreProductDto = response.getBody();
-        if(fakeStoreProductDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Product> updateProduct(Long id, ProductRequestDto request) {
+    public ResponseEntity<Product> updateProduct(Long id, ProductRequestDto request) throws ProductNotUpdatedException {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(request);
         ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
         ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.PUT, requestCallback, responseExtractor);
+        if(response == null || response.getBody() == null) {
+            throw new ProductNotUpdatedException(id);
+        }
         FakeStoreProductDto fakeStoreProductDto = response.getBody();
-        if(fakeStoreProductDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Product> deleteProduct(Long id) {
+    public ResponseEntity<Product> deleteProduct(Long id) throws ProductNotFoundException {
         ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
         ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(fakeStoreProductUrl+id, HttpMethod.DELETE, null, responseExtractor);
+        if(response == null || response.getBody() == null) {
+            throw new ProductNotFoundException(id);
+        }
         FakeStoreProductDto fakeStoreProductDto = response.getBody();
-        if(fakeStoreProductDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
