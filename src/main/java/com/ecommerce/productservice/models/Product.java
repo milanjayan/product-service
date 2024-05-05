@@ -1,17 +1,21 @@
 package com.ecommerce.productservice.models;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Fetch;
 
 @Getter
 @Setter
-@Builder
-public class Product {
-    private Long id;
+@Entity
+@SuperBuilder
+@NoArgsConstructor
+public class Product extends BaseModel {
     private String title;
     private String Description;
     private Double price;
     private String image;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 }

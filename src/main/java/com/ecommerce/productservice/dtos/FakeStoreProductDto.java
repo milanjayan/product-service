@@ -1,4 +1,4 @@
-package com.ecommerce.productservice.Dtos;
+package com.ecommerce.productservice.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,4 +12,12 @@ public class FakeStoreProductDto {
     private String category;
     private String description;
     private String image;
+    private FakeStoreProductRatingDto rating;
+
+    @Getter
+    @Setter
+    public static class FakeStoreProductRatingDto {
+        private Double rate;
+        private Integer count;
+    }
 }

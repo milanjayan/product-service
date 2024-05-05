@@ -1,6 +1,6 @@
 package com.ecommerce.productservice.exceptionhandlers;
 
-import com.ecommerce.productservice.Dtos.ExceptionDto;
+import com.ecommerce.productservice.dtos.ExceptionDto;
 import com.ecommerce.productservice.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +71,15 @@ public class ExceptionHandlers {
                 .resolution("try again later with all credentials")
                 .build();
         return new ResponseEntity<>(exceptionDto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ProductCredentialMissingException.class)
+    public ResponseEntity<ExceptionDto> handleProductCredentialMissingException(ProductCredentialMissingException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("product credential: "+exception.getCredential()+" missing")
+                .resolution("try again with all required credentials")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
 
 }

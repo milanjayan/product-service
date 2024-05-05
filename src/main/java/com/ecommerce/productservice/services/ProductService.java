@@ -1,6 +1,6 @@
 package com.ecommerce.productservice.services;
 
-import com.ecommerce.productservice.Dtos.ProductRequestDto;
+import com.ecommerce.productservice.dtos.ProductRequestDto;
 import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
@@ -9,16 +9,14 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface ProductService {
-    ResponseEntity<Product> getProductById(Long id) throws ProductNotFoundException;
-    ResponseEntity<List<Product>> getAllProducts() throws NoProductsFoundException;
+    Product getProductById(Long id) throws ProductNotFoundException;
+    List<Product> getAllProducts() throws NoProductsFoundException;
 
-    ResponseEntity<List<Category>> getAllCategories() throws NoCategoriesFoundException;
+    List<Product> getInCategory(Category category) throws NoProductsFoundInCategoryException;
 
-    ResponseEntity<List<Product>> getInCategory(String category) throws NoProductsFoundInCategoryException;
+    Product createProduct(Product product) throws ProductNotCreatedException, ProductCredentialMissingException;
 
-    ResponseEntity<Product> createProduct(ProductRequestDto request) throws ProductNotCreatedException;
-
-    ResponseEntity<Product> replaceProduct(Long id, ProductRequestDto request) throws ProductNotUpdatedException;
-    ResponseEntity<Product> updateProduct(Long id, ProductRequestDto request) throws ProductNotUpdatedException;
-    ResponseEntity<Product> deleteProduct(Long id) throws ProductNotFoundException;
+    Product replaceProduct(Product product) throws ProductNotUpdatedException, ProductNotFoundException;
+    Product updateProduct(Product product) throws ProductNotUpdatedException, ProductNotFoundException;
+    void deleteProduct(Long id) throws ProductNotFoundException;
 }

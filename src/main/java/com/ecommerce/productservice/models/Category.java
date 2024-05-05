@@ -1,13 +1,19 @@
 package com.ecommerce.productservice.models;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
 @Setter
-@Builder
-public class Category {
-    private Long id;
+@Entity
+@SuperBuilder
+@NoArgsConstructor
+public class Category extends BaseModel {
     private String title;
+//    @OneToMany(mappedBy = "category")
+//    private List<Product> products;
 }
