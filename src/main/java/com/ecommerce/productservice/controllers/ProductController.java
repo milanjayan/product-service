@@ -40,14 +40,14 @@ public class ProductController {
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Product>> getInCategory(@PathVariable("category") String category) throws NoProductsFoundInCategoryException, CategoryRequiredException {
-        if(category == null) {
+    public ResponseEntity<List<Product>> getInCategory(@PathVariable("category") String categoryTitle) throws NoProductsFoundInCategoryException, CategoryRequiredException {
+        if(categoryTitle == null) {
             throw new CategoryRequiredException();
         }
-        Category category1 = Category.builder()
-                .title(category)
+        Category category = Category.builder()
+                .title(categoryTitle)
                 .build();
-        List<Product> products = productService.getInCategory(category1);
+        List<Product> products = productService.getInCategory(category);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -127,7 +127,7 @@ public class ProductController {
         return Product.builder()
                 .title(request.getTitle())
                 .price(request.getPrice())
-                .Description(request.getDescription())
+                .description(request.getDescription())
                 .category(category)
                 .image(request.getImage())
                 .build();

@@ -1,5 +1,8 @@
 package com.ecommerce.productservice.exceptions;
 
+import lombok.Getter;
+
+@Getter
 public class CategoryNotFoundException extends Exception {
     private Long id;
 

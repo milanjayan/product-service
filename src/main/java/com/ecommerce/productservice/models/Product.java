@@ -12,10 +12,11 @@ import org.hibernate.annotations.Fetch;
 @NoArgsConstructor
 public class Product extends BaseModel {
     private String title;
-    private String Description;
+    private String description;
     private Double price;
     private String image;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+    private Integer quantity;
 }

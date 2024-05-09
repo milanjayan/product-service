@@ -36,7 +36,7 @@ public class FakeStoreProductService implements ProductService{
                 .id(dto.getId())
                 .title(dto.getTitle())
                 .price(dto.getPrice())
-                .Description(dto.getDescription())
+                .description(dto.getDescription())
                 .category(category)
                 .image(dto.getImage())
                 .build();

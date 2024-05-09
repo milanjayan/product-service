@@ -23,7 +23,7 @@ public class ExceptionHandlers {
     public ResponseEntity<ExceptionDto> handleProductNotFoundException(ProductNotFoundException exception) {
         ExceptionDto exceptionDto = ExceptionDto.builder()
                 .message("product with id:"+exception.getId()+" not found")
-                .resolution("Pass id with in range 0 to 20")
+                .resolution("try again with another id")
                 .build();
         return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
     }
@@ -33,6 +33,15 @@ public class ExceptionHandlers {
         ExceptionDto exceptionDto = ExceptionDto.builder()
                 .message("no products found")
                 .resolution("Add new products")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ExceptionDto> handleCategoryNotFoundException(CategoryNotFoundException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message("category with id:"+exception.getId()+" not found")
+                .resolution("try again with another id")
                 .build();
         return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
     }
