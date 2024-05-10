@@ -55,10 +55,10 @@ public class SelfProductService implements ProductService {
 
     @Override
     public Product replaceProduct(Product product) throws ProductNotUpdatedException, ProductNotFoundException {
-        Category category = categoryService.findOrCreate(product.getCategory());
-        product.setCategory(category);
         Optional<Product> optionalProduct = productRepository.findById(product.getId());
         optionalProduct.orElseThrow(() -> new ProductNotFoundException(product.getId()));
+        Category category = categoryService.findOrCreate(product.getCategory());
+        product.setCategory(category);
         return productRepository.save(product);
     }
 
