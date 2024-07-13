@@ -21,10 +21,11 @@ public abstract class BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    private Date createAt;
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
+    private Date createAt;
     @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 }
