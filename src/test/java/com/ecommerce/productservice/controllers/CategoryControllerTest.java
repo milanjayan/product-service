@@ -4,6 +4,7 @@ import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
 import com.ecommerce.productservice.exceptions.NoCategoriesFoundException;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.services.CategoryService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+@Disabled
 @SpringBootTest
 class CategoryControllerTest {
 

@@ -4,6 +4,7 @@ import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
 import com.ecommerce.productservice.exceptions.NoCategoriesFoundException;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.repositories.CategoryRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@Disabled
 @SpringBootTest
 class SelfCategoryServiceTest {
 

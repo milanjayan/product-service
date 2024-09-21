@@ -1,17 +1,14 @@
 package com.ecommerce.productservice.controllers;
 
-import com.ecommerce.productservice.dtos.CategoryRequestDto;
 import com.ecommerce.productservice.dtos.ProductRequestDto;
 import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
-import com.ecommerce.productservice.services.CategoryService;
 import com.ecommerce.productservice.services.ProductService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +24,7 @@ public class ProductController {
     }
 
     //get by id
+    @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
         Product product = productService.getProductById(id);
@@ -34,34 +32,38 @@ public class ProductController {
     }
 
     //get all products
-    @GetMapping("")
+    @PreAuthorize("hasAuthority('SCOPE_read')")
+    @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() throws NoProductsFoundException {
         List<Product> products =  productService.getAllProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<Product>> getInCategory(@PathVariable("category") String categoryTitle) throws NoProductsFoundInCategoryException, CategoryRequiredException {
-        if(categoryTitle == null) {
+    @PreAuthorize("hasAuthority('SCOPE_read')")
+    @GetMapping("/category")
+    public ResponseEntity<List<Product>> getInCategory(@RequestParam String title) throws NoProductsFoundInCategoryException, CategoryRequiredException {
+        if(title == null) {
             throw new CategoryRequiredException();
         }
         Category category = Category.builder()
-                .title(categoryTitle)
+                .title(title)
                 .build();
         List<Product> products = productService.getInCategory(category);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     //create
+    @PreAuthorize("hasAuthority('SCOPE_write')")
     @PostMapping("")
     public ResponseEntity<Product> createProduct(@RequestBody ProductRequestDto request) throws ProductNotCreatedException, ProductCredentialMissingException {
         validateProduct(request);
         Product product = convertProductRequestDtoToProduct(request);
         Product responseProduct = productService.createProduct(product);
-        return new ResponseEntity<>(responseProduct, HttpStatus.OK);
+        return new ResponseEntity<>(responseProduct, HttpStatus.CREATED);
     }
 
     //replace
+    @PreAuthorize("hasAuthority('SCOPE_write')")
     @PutMapping("/{id}")
     public ResponseEntity<Product> replaceProduct(@PathVariable Long id, @RequestBody ProductRequestDto request) throws ProductNotUpdatedException, ProductCredentialMissingException, ProductNotFoundException {
         validateProduct(request);
@@ -72,6 +74,7 @@ public class ProductController {
     }
 
     //update
+    @PreAuthorize("hasAuthority('SCOPE_write')")
     @PatchMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDto request) throws ProductNotUpdatedException, ProductNotFoundException {
         Product product = Product.builder().build();
@@ -97,6 +100,7 @@ public class ProductController {
     }
 
     //delete
+    @PreAuthorize("hasAuthority('SCOPE_write')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) throws ProductNotFoundException {
         productService.deleteProduct(id);
