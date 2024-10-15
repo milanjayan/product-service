@@ -7,6 +7,7 @@ import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,32 +53,38 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public List<Product> getAllProducts() throws NoProductsFoundException {
-        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl, FakeStoreProductDto[].class);
-        Optional<FakeStoreProductDto[]> optionalFakeStoreProductDtos = Optional.ofNullable(fakeStoreProductDtos);
-        if(optionalFakeStoreProductDtos.isEmpty() || fakeStoreProductDtos.length == 0) {
-            throw new NoProductsFoundException();
-        }
-        List<Product> products = new ArrayList<>();
-        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
-            Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
-            products.add(product);
-        }
-        return products;
+    public Page<Product> getAllProducts(int pageNumber, int pageSize, String sortBy) throws NoProductsFoundException {
+//        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl, FakeStoreProductDto[].class);
+//        Optional<FakeStoreProductDto[]> optionalFakeStoreProductDtos = Optional.ofNullable(fakeStoreProductDtos);
+//        if(optionalFakeStoreProductDtos.isEmpty() || fakeStoreProductDtos.length == 0) {
+//            throw new NoProductsFoundException();
+//        }
+//        List<Product> products = new ArrayList<>();
+//        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
+//            Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+//            products.add(product);
+//        }
+//        return products;
+        return null;
     }
 
     @Override
-    public List<Product> getInCategory(Category category) throws NoProductsFoundInCategoryException {
-        String categoryTitle = category.getTitle();
-        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl+"category/"+categoryTitle, FakeStoreProductDto[].class);
-        Optional<FakeStoreProductDto[]> optionalFakeStoreProductDtos = Optional.ofNullable(fakeStoreProductDtos);
-        if(optionalFakeStoreProductDtos.isEmpty() || fakeStoreProductDtos.length == 0) {
-            throw new NoProductsFoundInCategoryException(category.getTitle());
-        }
-        return Arrays.stream(fakeStoreProductDtos)
-                .map(this::convertFakeStoreProductDtoToProduct)
-                .toList();
+    public Page<Product> getInCategory(Category category, int pageNumber, int pageSize, String sortBy) throws NoProductsFoundInCategoryException {
+        return null;
     }
+
+//    @Override
+//    public List<Product> getInCategory(Category category) throws NoProductsFoundInCategoryException {
+//        String categoryTitle = category.getTitle();
+//        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakeStoreProductUrl+"category/"+categoryTitle, FakeStoreProductDto[].class);
+//        Optional<FakeStoreProductDto[]> optionalFakeStoreProductDtos = Optional.ofNullable(fakeStoreProductDtos);
+//        if(optionalFakeStoreProductDtos.isEmpty() || fakeStoreProductDtos.length == 0) {
+//            throw new NoProductsFoundInCategoryException(category.getTitle());
+//        }
+//        return Arrays.stream(fakeStoreProductDtos)
+//                .map(this::convertFakeStoreProductDtoToProduct)
+//                .toList();
+//    }
 
     @Override
     public Product createProduct(Product product) throws ProductNotCreatedException {

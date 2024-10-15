@@ -6,6 +6,7 @@ import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,21 +35,21 @@ public class ProductController {
     //get all products
     @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts() throws NoProductsFoundException {
-        List<Product> products =  productService.getAllProducts();
+    public ResponseEntity<Page<Product>> getAllProducts(@RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortBy") String sortBy) throws NoProductsFoundException {
+        Page<Product> products =  productService.getAllProducts(pageNumber, pageSize, sortBy);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping("/category")
-    public ResponseEntity<List<Product>> getInCategory(@RequestParam String title) throws NoProductsFoundInCategoryException, CategoryRequiredException {
+    public ResponseEntity<Page<Product>> getInCategory(@RequestParam("title") String title, @RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortBy") String sortBy) throws NoProductsFoundInCategoryException, CategoryRequiredException {
         if(title == null) {
             throw new CategoryRequiredException();
         }
         Category category = Category.builder()
                 .title(title)
                 .build();
-        List<Product> products = productService.getInCategory(category);
+        Page<Product> products = productService.getInCategory(category, pageNumber, pageSize, sortBy);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

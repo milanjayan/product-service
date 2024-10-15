@@ -5,6 +5,9 @@ import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +32,11 @@ public class SelfProductService implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() throws NoProductsFoundException {
-        List<Product> products = productRepository.findAll();
+    public Page<Product> getAllProducts(int pageNumber, int pageSize, String sortBy) throws NoProductsFoundException {
+        Page<Product> products = productRepository.findAll(PageRequest.of(
+                pageNumber,
+                pageSize,
+                Sort.by(sortBy).ascending()));
         if (products.isEmpty()) {
             throw new NoProductsFoundException();
         }
@@ -38,8 +44,12 @@ public class SelfProductService implements ProductService {
     }
 
     @Override
-    public List<Product> getInCategory(Category category) throws NoProductsFoundInCategoryException {
-        List<Product> products = productRepository.findAllByCategoryTitle(category.getTitle());
+    public Page<Product> getInCategory(Category category, int pageNumber, int pageSize, String sortBy) throws NoProductsFoundInCategoryException {
+        Page<Product> products = productRepository.findAllByCategoryTitle(category.getTitle(), PageRequest.of(
+                pageNumber,
+                pageSize,
+                Sort.by(sortBy).ascending()
+        ));
         if(products.isEmpty()) {
             throw new NoProductsFoundInCategoryException(category.getTitle());
         }

@@ -4,15 +4,16 @@ import com.ecommerce.productservice.dtos.ProductRequestDto;
 import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface ProductService {
     Product getProductById(Long id) throws ProductNotFoundException;
-    List<Product> getAllProducts() throws NoProductsFoundException;
+    Page<Product> getAllProducts(int pageNumber, int pageSize, String sortBy) throws NoProductsFoundException;
 
-    List<Product> getInCategory(Category category) throws NoProductsFoundInCategoryException;
+    Page<Product> getInCategory(Category category, int pageNumber, int pageSize, String sortBy) throws NoProductsFoundInCategoryException;
 
     Product createProduct(Product product) throws ProductNotCreatedException, ProductCredentialMissingException;
 
