@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Qualifier("SelfCategoryService")
+@Qualifier("selfCategoryService")
 @AllArgsConstructor
 public class SelfCategoryService implements CategoryService {
 

@@ -1,4 +1,4 @@
-package com.ecommerce.productservice.exceptionhandlers;
+package com.ecommerce.productservice.configurations;
 
 import com.ecommerce.productservice.dtos.ExceptionDto;
 import com.ecommerce.productservice.exceptions.*;
@@ -91,4 +91,21 @@ public class ExceptionHandlers {
         return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ExceptionDto> handleUserNotFoundException(UserNotFoundException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message(exception.getMessage())
+                .resolution("try again with different user")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UnauthorizedToAccessThisProductException.class)
+    public ResponseEntity<ExceptionDto> handleUnauthorizedToAccessThisProductException(UnauthorizedToAccessThisProductException exception) {
+        ExceptionDto exceptionDto = ExceptionDto.builder()
+                .message(exception.getMessage())
+                .resolution("try again with different user")
+                .build();
+        return new ResponseEntity<>(exceptionDto, HttpStatus.UNAUTHORIZED);
+    }
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.services;
 
+import com.ecommerce.productservice.dtos.UserDto;
 import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
@@ -99,6 +100,11 @@ public class SelfProductService implements ProductService {
     @Override
     public void deleteProduct(Long id) throws ProductNotFoundException {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public Product demoGetAuthorizedProduct(Long userId, Long productId) throws ProductNotFoundException, UnauthorizedToAccessThisProductException, UserNotFoundException {
+        return null;
     }
 }
 

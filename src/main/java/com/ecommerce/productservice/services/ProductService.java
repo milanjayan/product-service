@@ -1,6 +1,7 @@
 package com.ecommerce.productservice.services;
 
 import com.ecommerce.productservice.dtos.ProductRequestDto;
+import com.ecommerce.productservice.dtos.UserDto;
 import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
@@ -20,4 +21,6 @@ public interface ProductService {
     Product replaceProduct(Product product) throws ProductNotUpdatedException, ProductNotFoundException;
     Product updateProduct(Product product) throws ProductNotUpdatedException, ProductNotFoundException;
     void deleteProduct(Long id) throws ProductNotFoundException;
+
+    Product demoGetAuthorizedProduct(Long userId, Long productId) throws ProductNotFoundException, UnauthorizedToAccessThisProductException, UserNotFoundException;
 }
