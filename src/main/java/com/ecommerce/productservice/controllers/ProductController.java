@@ -138,9 +138,9 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("")
-    public ResponseEntity<Product> demoGetAuthorizedProduct(@RequestParam Long userId, @RequestParam Long productId) throws ProductNotFoundException, UnauthorizedToAccessThisProductException, UserNotFoundException {
-        Product product = productService.demoGetAuthorizedProduct(userId, productId);
-        return new ResponseEntity<>(product, HttpStatus.OK);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<Product> demoGetAuthorizedProduct(@RequestParam Long userId, @RequestParam Long productId) throws ProductNotFoundException, UnauthorizedToAccessThisProductException, UserNotFoundException {
+//        Product product = productService.demoGetAuthorizedProduct(userId, productId);
+//        return new ResponseEntity<>(product, HttpStatus.OK);
+//    }
 }
